@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test Cambridge - 20 Preguntas</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.5; }
+    header { background:#222; color:#fff; padding:16px; margin:-20px -20px 20px -20px; }
+    h1 { font-size: 20px; margin:0; }
+    .question { border: 1px solid #eee; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+    .question h3 { margin: 0 0 8px 0; font-size: 16px; }
+    .options { display: grid; gap: 6px; }
+    .options label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .btn { padding:10px 14px; border:0; border-radius:8px; cursor:pointer; }
+    .btn-primary { background:#0a7cff; color:#fff; }
+    .btn-secondary { background:#f0f0f0; }
+    .actions { display:flex; gap:10px; margin: 16px 0; }
+    .result { padding: 12px; border-radius:8px; background:#f5faff; border:1px solid #e6f0ff; margin-top: 10px; }
+    .correct { background:#eaffea; }
+    .incorrect { background:#ffecec; }
+    .muted { color:#666; font-size: 14px; }
+    footer { margin-top: 28px; font-size: 12px; color:#666; }
+    a.home { display:inline-block; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Test tipo Cambridge – 20 preguntas</h1>
+  </header>
+
+  <form id="quizForm">
+    <div id="questionsContainer"></div>
+
+    <div class="actions">
+      <button type="button" id="submitBtn" class="btn btn-primary">Corregir</button>
+      <button type="button" id="retryBtn" class="btn btn-secondary">Reiniciar</button>
+    </div>
+
+    <div id="resultBox" class="result" style="display:none;"></div>
+    <p class="muted">Responde todas las preguntas. Al pulsar "Corregir" verás tu puntuación y cuáles acertaste.</p>
+  </form>
+
+  <a class="home" href="./index.html">← Volver al inicio</a>
+
+  <footer>© 2025 Certificat Idioma</footer>
+
+  <script>
+    const QUESTIONS = [
+      { q: "1) She ______ to the gym every morning before work.", options: ["go", "goes", "is going", "gone"], correct: 1 },
+      { q: "2) Which word is closest in meaning to 'rapid'?", options: ["slow", "quick", "late", "heavy"], correct: 1 },
+      { q: "3) If I ______ more time, I would learn Italian.", options: ["have", "had", "am having", "will have"], correct: 1 },
+      { q: "4) I'm interested ______ languages.", options: ["on", "of", "in", "at"], correct: 2 },
+      { q: "5) Which sentence is correct?", options: ["There is much people", "There are many people", "There are much people", "There is many people"], correct: 1 },
+      { q: "6) The film was ______ than I expected.", options: ["more good", "gooder", "better", "best"], correct: 2 },
+      { q: "7) I haven’t seen her ______ Monday.", options: ["for", "since", "during", "by"], correct: 1 },
+      { q: "8) They ______ lunch when I arrived.", options: ["have", "were having", "had", "are having"], correct: 1 },
+      { q: "9) Which is a formal way to say 'ask for'?", options: ["request", "demand", "beg", "call"], correct: 0 },
+      { q: "10) The book ______ I bought was expensive.", options: ["who", "which", "where", "whom"], correct: 1 },
+      { q: "11) He’s the ______ person in the team.", options: ["more creative", "most creative", "much creative", "many creative"], correct: 1 },
+      { q: "12) Please ______ the form and send it back.", options: ["fill out", "give up", "turn off", "break down"], correct: 0 },
+      { q: "13) We need to ______ the meeting until next week.", options: ["bring up", "put off", "look after", "take over"], correct: 1 },
+      { q: "14) By this time tomorrow, I ______ my assignment.", options: ["finish", "will finish", "will have finished", "have finished"], correct: 2 },
+      { q: "15) ______ a decision.", options: ["Do", "Make", "Take", "Give"], correct: 1 },
+      { q: "16) I didn’t ______ to like coffee.", options: ["used", "use", "uses", "using"], correct: 1 },
+      { q: "17) I prefer ______ at home to going out.", options: ["to stay", "stay", "stayed", "staying"], correct: 3 },
+      { q: "18) She asked me ______ I could help her.", options: ["that", "if", "which", "how"], correct: 1 },
+      { q: "19) The lesson ______ by the time we arrived.", options: ["has finished", "had finished", "was finishing", "finishes"], correct: 1 },
+      { q: "20) He managed to pass the exam ______ studying a lot.", options: ["in spite of", "even", "although", "because"], correct: 0 }
+    ];
+
+    const container = document.getElementById('questionsContainer');
+
+    function render() {
+      container.innerHTML = "";
+      QUESTIONS.forEach((item, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `
+          <h3>${item.q}</h3>
+          <div class="options">
+            ${item.options.map((opt, i) => `
+              <label>
+                <input type="radio" name="q${idx}" value="${i}" />
+                <span>${String.fromCharCode(65 + i)}) ${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function grade() {
+      let score = 0;
+      const total = QUESTIONS.length;
+      const questions = container.querySelectorAll('.question');
+      questions.forEach((qDiv, idx) => {
+        const chosen = qDiv.querySelector('input[type="radio"]:checked');
+        const correctIndex = QUESTIONS[idx].correct;
+        qDiv.classList.remove('correct', 'incorrect');
+        if (chosen && Number(chosen.value) === correctIndex) {
+          score++;
+          qDiv.classList.add('correct');
+        } else {
+          qDiv.classList.add('incorrect');
+        }
+      });
+      const box = document.getElementById('resultBox');
+      const percent = Math.round((score / total) * 100);
+      box.style.display = 'block';
+      box.innerHTML = `<strong>Resultado:</strong> ${score}/${total} (${percent}%).`;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      document.getElementById('resultBox').style.display = 'none';
+      const inputs = container.querySelectorAll('input[type="radio"]');
+      inputs.forEach(i => i.checked = false);
+      const qs = container.querySelectorAll('.question');
+      qs.forEach(q => q.classList.remove('correct', 'incorrect'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', grade);
+    document.getElementById('retryBtn').addEventListener('click', resetQuiz);
+
+    render();
+  </script>
+</body>
+</html>
