@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reading Part 1 – Cambridge B1</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.55; }
+    header { background:#222; color:#fff; padding:16px; margin:-20px -20px 20px -20px; }
+    h1 { font-size: 20px; margin:0; }
+    .text { background:#f9f9f9; border:1px solid #eee; border-radius:8px; padding:16px; margin: 10px 0 18px; }
+    .question { border: 1px solid #eee; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+    .question h3 { margin: 0 0 8px 0; font-size: 16px; }
+    .options { display: grid; gap: 6px; }
+    .options label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .btn { padding:10px 14px; border:0; border-radius:8px; cursor:pointer; }
+    .btn-primary { background:#0a7cff; color:#fff; }
+    .btn-secondary { background:#f0f0f0; }
+    .actions { display:flex; gap:10px; margin: 16px 0; }
+    .result { padding: 12px; border-radius:8px; background:#f5faff; border:1px solid #e6f0ff; margin-top: 10px; }
+    .correct { background:#eaffea; }
+    .incorrect { background:#ffecec; }
+    .feedback { font-size: 14px; margin-top: 6px; }
+    footer { margin-top: 28px; font-size: 12px; color:#666; }
+    a.home { display:inline-block; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Reading Part 1 – Questions 1–5 (Multiple choice)</h1>
+  </header>
+
+  <section class="instructions">
+    <p>Read the text and choose the correct answer (A, B or C) for questions 1–5.</p>
+  </section>
+
+  <article class="text">
+    <h2>Volunteering at Riverside Museum</h2>
+    <p>
+      The Riverside Museum is looking for new volunteers to help at weekends from September to December.
+      Volunteers welcome visitors, answer simple questions, and support children’s activities in our Learning Room.
+      No previous museum experience is required, but volunteers should enjoy talking to people and feel comfortable helping families.
+    </p>
+    <p>
+      Shifts run from 9.30 to 13.00 and from 13.00 to 16.30 on Saturdays and Sundays.
+      We ask volunteers to commit to at least two shifts per month. You can choose your own dates using our online calendar,
+      and we are flexible if you need to change at short notice.
+    </p>
+    <p>
+      All volunteers receive a short training session before their first shift.
+      This covers customer service, health and safety, and how to guide visitors around our most popular galleries.
+      During your first two shifts, an experienced team member will be nearby to support you.
+    </p>
+    <p>
+      Travel costs up to £6 per day are paid. Volunteers also receive a 15% discount in the café and shop on the days they work.
+      Unfortunately, we cannot offer payment for time, and the role is not suitable for people under 16.
+      To apply, complete the form on our website by 25 August. We will contact selected applicants for a short online chat.
+    </p>
+  </article>
+
+  <form id="quizForm">
+    <div id="questionsContainer"></div>
+
+    <div class="actions">
+      <button type="button" id="submitBtn" class="btn btn-primary">Check answers</button>
+      <button type="button" id="retryBtn" class="btn btn-secondary">Reset</button>
+    </div>
+
+    <div id="resultBox" class="result" style="display:none;"></div>
+  </form>
+
+  <a class="home" href="./index.html">← Back to home</a>
+
+  <footer>© 2025 Certificat Idioma</footer>
+
+  <script>
+    const QUESTIONS = [
+      {
+        q: "1) What is the main purpose of the text?",
+        options: [
+          "To advertise paid weekend jobs at the museum.",
+          "To invite people to volunteer at the museum.",
+          "To inform visitors about new gallery openings."
+        ],
+        correct: 1,
+        feedback: [
+          "Not correct. The text clearly states it is a volunteer role, not paid work.",
+          "Correct. The text invites people to apply for volunteer shifts.",
+          "Not correct. The text does not describe new galleries; it explains a volunteer opportunity."
+        ]
+      },
+      {
+        q: "2) What are volunteers expected to do?",
+        options: [
+          "Give long talks about the museum’s history.",
+          "Answer basic questions and help with children’s activities.",
+          "Work in the café and shop during busy times."
+        ],
+        correct: 1,
+        feedback: [
+          "Not correct. There is no mention of giving long talks.",
+          "Correct. The text mentions welcoming visitors, answering questions and supporting children’s activities.",
+          "Not correct. Discounts are offered for the café and shop, but volunteers don’t work there."
+        ]
+      },
+      {
+        q: "3) Which statement about shifts is true?",
+        options: [
+          "Volunteers must work every weekend.",
+          "Shifts are only available on Saturdays.",
+          "Volunteers can choose their dates and change if needed."
+        ],
+        correct: 2,
+        feedback: [
+          "Not correct. Volunteers commit to at least two shifts per month, not every weekend.",
+          "Not correct. Shifts are on Saturdays and Sundays.",
+          "Correct. Dates are chosen via an online calendar, with flexibility to change."
+        ]
+      },
+      {
+        q: "4) What support is provided for new volunteers?",
+        options: [
+          "Two weeks of classroom training before starting.",
+          "A short training session and help during first shifts.",
+          "A payment for attending a safety course."
+        ],
+        correct: 1,
+        feedback: [
+          "Not correct. Training is short, not two weeks.",
+          "Correct. There is a short training session and support during the first two shifts.",
+          "Not correct. There is no payment for training; travel costs are covered instead."
+        ]
+      },
+      {
+        q: "5) Who cannot apply for this role?",
+        options: [
+          "People under the age of sixteen.",
+          "People who cannot work in the mornings.",
+          "People without museum experience."
+        ],
+        correct: 0,
+        feedback: [
+          "Correct. The role is not suitable for people under 16.",
+          "Not correct. There are morning and afternoon shifts; you can choose.",
+          "Not correct. No previous museum experience is required."
+        ]
+      }
+    ];
+
+    const container = document.getElementById('questionsContainer');
+
+    function render() {
+      container.innerHTML = "";
+      QUESTIONS.forEach((item, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `
+          <h3>${item.q}</h3>
+          <div class="options">
+            ${item.options.map((opt, i) => `
+              <label>
+                <input type="radio" name="q${idx}" value="${i}" />
+                <span>${String.fromCharCode(65 + i)}) ${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div class="feedback" id="fb-${idx}" style="display:none;"></div>
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function grade() {
+      let score = 0;
+      const total = QUESTIONS.length;
+      const questions = container.querySelectorAll('.question');
+      questions.forEach((qDiv, idx) => {
+        const chosen = qDiv.querySelector('input[type="radio"]:checked');
+        const correctIndex = QUESTIONS[idx].correct;
+        const fb = document.getElementById('fb-' + idx);
+        qDiv.classList.remove('correct', 'incorrect');
+        fb.style.display = 'block';
+        if (chosen && Number(chosen.value) === correctIndex) {
+          score++;
+          qDiv.classList.add('correct');
+          fb.textContent = QUESTIONS[idx].feedback[correctIndex];
+        } else {
+          qDiv.classList.add('incorrect');
+          const chosenIdx = chosen ? Number(chosen.value) : null;
+          fb.textContent = chosenIdx === null
+            ? "No answer selected. " + QUESTIONS[idx].feedback[correctIndex]
+            : QUESTIONS[idx].feedback[chosenIdx];
+        }
+      });
+      const box = document.getElementById('resultBox');
+      const percent = Math.round((score / total) * 100);
+      box.style.display = 'block';
+      box.innerHTML = `<strong>Result:</strong> ${score}/${total} (${percent}%).`;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      document.getElementById('resultBox').style.display = 'none';
+      const inputs = container.querySelectorAll('input[type="radio"]');
+      inputs.forEach(i => i.checked = false);
+      const qs = container.querySelectorAll('.question');
+      qs.forEach(q => {
+        q.classList.remove('correct', 'incorrect');
+        const fb = q.querySelector('.feedback');
+        if (fb) fb.style.display = 'none';
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', grade);
+    document.getElementById('retryBtn').addEventListener('click', resetQuiz);
+
+    render();
+  </script>
+</body>
+</html>
